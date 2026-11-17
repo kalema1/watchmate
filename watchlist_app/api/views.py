@@ -6,6 +6,7 @@ from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.views import APIView
 from rest_framework import generics
 
+from watchlist_app.api.permissions import AdminOrReadOnly, ReviewUserOrReadOnly
 from watchlist_app.api.serializer import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
 from watchlist_app.models import WatchList, StreamPlatform, Review
 
@@ -106,6 +107,8 @@ class ReviewCreateAV(generics.CreateAPIView):
 class ReviewAV(generics.ListAPIView):
     # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = [AdminOrReadOnly]
+
     def get_queryset(self):
         pk = self.kwargs['pk']
         return Review.objects.filter(watchlist = pk)
@@ -114,6 +117,7 @@ class ReviewAV(generics.ListAPIView):
 class ReviewDetailsAV(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = [ReviewUserOrReadOnly]
 
 # class ReviewAV(APIView):
 #     def get(self, request):
